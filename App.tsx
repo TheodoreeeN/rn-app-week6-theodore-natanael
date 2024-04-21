@@ -4,8 +4,12 @@
  *
  * @format
  */
-
+import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
+import Menu1 from './components/screens/Menu1';
+import Menu2 from './components/screens/Menu2';
 import React from 'react';
+// import AppNavigator from './AppNavigator/Navigator';
 import type {PropsWithChildren} from 'react';
 import {
   SafeAreaView,
@@ -15,8 +19,14 @@ import {
   Text,
   useColorScheme,
   View,
+  Button,
+  Touchable,
+  TouchableNativeFeedback,
+  TouchableHighlight,
+  FlatList,
+  Image,
 } from 'react-native';
-
+import Icon from 'react-native-ionicons';
 import {
   Colors,
   DebugInstructions,
@@ -24,7 +34,12 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-
+import SplashScreen from './components/screens/SplashScreen';
+import Register from './components/screens/Register';
+import Login from './components/screens/Login';
+import HomeScreen from './components/screens/HomeScreen';
+import ProfileScreen from './components/screens/ProfileScreen';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 type SectionProps = PropsWithChildren<{
   title: string;
 }>;
@@ -55,45 +70,42 @@ function Section({children, title}: SectionProps): React.JSX.Element {
   );
 }
 
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+const Stack = createStackNavigator()
+const Tab = createBottomTabNavigator();
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
+function Tabs() {
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
+    <Tab.Navigator backBehavior='none'>
+      <Tab.Screen name="Home" 
+      component={HomeScreen} 
+      options={{
+      tabBarLabel: 'Home',
+      tabBarIcon: () => (
+        <Image source={require('./Icons/home.png')} style={{width: 30, height: 30}}/>
+      ),
+      }}
+    />
+      <Tab.Screen name="Profile" component={ProfileScreen}
+      options={{
+        tabBarLabel: 'Profile',
+        tabBarIcon: () => (
+          <Image source={require('./Icons/profile.png')} style={{width: 30, height: 30}}/>
+        ),
+        }}
       />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    </Tab.Navigator>
   );
+}
+
+function App(): React.JSX.Element {
+  return <NavigationContainer>
+  <Stack.Navigator screenOptions={{headerShown: false}}>
+    <Stack.Screen name="Splash" component={SplashScreen} />
+    <Stack.Screen name="Login" component={Login} />
+    <Stack.Screen name="Register" component={Register} />
+    <Stack.Screen name="Tabs" component={Tabs} />
+  </Stack.Navigator>
+</NavigationContainer>
 }
 
 const styles = StyleSheet.create({
